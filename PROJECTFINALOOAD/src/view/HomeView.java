@@ -1,15 +1,19 @@
 package view;
 
 import controller.AdminController;
+import javafx.scene.control.Hyperlink;
 import controller.EventController;
 import controller.EventOrganizerController;
 import controller.GuestController;
 import controller.InvitationController;
 import controller.UserController;
 import controller.VendorController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -17,17 +21,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import main.Session;
 import model.Event;
 import model.Guest;
 import model.Invitation;
+import model.User;
 import model.Vendor;
 import view_controller.ViewController;
 
 
 public class HomeView extends VBox{
+	public static String CURRENT_LOCATION = "HomePage";
+	
 	TextField eventNameTf, eventDateTf, eventLocTf, eventDescTf;
 	Label productLbl, productDescLbl;
 	Button submitBtn;
@@ -36,6 +45,7 @@ public class HomeView extends VBox{
 	TableView<Event> acceptInviteTv;
 	ObservableList<Invitation> invites;
 	ObservableList<Event> acceptInvites;
+	NavbarView nv = new NavbarView();
 	UserController uc = new UserController();
 	GuestController gc = new GuestController();
 	VendorController vc = new VendorController();
@@ -45,7 +55,9 @@ public class HomeView extends VBox{
 	Button viewEventDetailsBtn = new Button("View Event Details");
 	Button manageVendorBtn = new Button("Manage Product");
 	Event selectedEvent;
-
+	Hyperlink link;
+	Scene scene;
+	
     private void selectEvent() {
         Event selectedEvent = acceptInviteTv.getSelectionModel().getSelectedItem();
 
@@ -69,7 +81,7 @@ public class HomeView extends VBox{
 		productLbl = new Label();
 		productDescLbl = new Label();
 		manageVendorBtn.setOnMouseClicked(e->{
-			ViewController.getInstance(null).navigateToVendorView();
+			ViewController.getInstance(null).navigateToVendor();
 		});
 		submitBtn.setOnMouseClicked(e->{
 			AcceptInvite();
@@ -82,51 +94,28 @@ public class HomeView extends VBox{
 		productLbl.setText("Your Product: "+Session.getInstance().getUserSession().getProduct_name());
 		productDescLbl.setText("Product Description: "+Session.getInstance().getUserSession().getProduct_description());
 	}
-//	
-//	private void setUpTable() {
-//		events = FXCollections.observableArrayList(ic.getInvitations(Session.getInstance().getUserSession().getUser_email()));
-//		System.out.println("aaaaa");
-//		TableColumn<Invitation, String> invitationIdCol = new TableColumn<Invitation, String>("Invitation ID");
-//		invitationIdCol.setCellValueFactory(new PropertyValueFactory<Invitation, String>("invitation_id"));
-//		
-//		TableColumn<Invitation, String> eventIdCol = new TableColumn<Invitation, String>("Event ID");
-//		eventIdCol.setCellValueFactory(new PropertyValueFactory<Invitation, String>("event_id"));
-//		TableColumn<Event, String> eventNameCol = new TableColumn<>("Event Name");
-//		eventNameCol.setCellValueFactory(cellData -> {
-//		    String eventId = cellData.getValue().getEvent_id(); // Get the event ID
-//		    String eventName = ec.getEventById(eventId).getEvent_name(); // Use the method to get the event name
-//		    return new SimpleStringProperty(eventName); // Wrap the value in a StringProperty
-//		});
-//		TableColumn<Event, String> eventLocCol = new TableColumn<>("Event Location");
-//		eventNameCol.setCellValueFactory(cellData -> {
-//			String eventId = cellData.getValue().getEvent_id(); // Get the event ID
-//			String eventLocation = ec.getEventById(eventId).getEvent_location(); // Use the method to get the event name
-//			return new SimpleStringProperty(eventLocation); // Wrap the value in a StringProperty
-//		});
-//		TableColumn<Invitation, String> invitationStatusCol = new TableColumn<Invitation, String>("Invitation Status");
-//		invitationStatusCol.setCellValueFactory(new PropertyValueFactory<Invitation, String>("invitation_status"));
-////		
-////		TableColumn<Event, String> eventLocCol = new TableColumn<Event, String>("Event Name");
-////		eventLocCol.setCellValueFactory(new PropertyValueFactory<Event, String>("event_location"));
-////
-////		TableColumn<Event, String> eventDescCol = new TableColumn<Event, String>("Event Description");
-////		eventDescCol.setCellValueFactory(new PropertyValueFactory<Event, String>("event_description"));
-////
-////		TableColumn<Event, String> organizerIdCol = new TableColumn<Event, String>("Organizer ID");
-////		organizerIdCol.setCellValueFactory(new PropertyValueFactory<Event, String>("organizer_id"));
-//		//TableColumn<User, Boolean> selectCol = new TableColumn<>("Select");
-//		//selectCol.setCellValueFactory(data -> data.getValue().selectedProperty()); // Binding to BooleanProperty
-//		//selectCol.setCellFactory(CheckBoxTableCell.forTableColumn(selectCol));
-//        
-////		eventTv.getColumns().addAll(eventIdCol, eventNameCol, eventDateCol, eventLocCol, eventDescCol, organizerIdCol);
-//		inviteTv.getColumns().addAll(invitationIdCol, eventIdCol, eventNameCol,eventLocCol,invitationStatusCol);
-//		inviteTv.setItems(events);
-//	}
+
 	private void setUpTable() {
 	    // Fetch invitations for the current user
 	    invites = FXCollections.observableArrayList(
 	        ic.getInvitations(Session.getInstance().getUserSession().getUser_email())
 	    );
+
+	    // Checkbox column
+	    TableColumn<Invitation, Boolean> selectColumn = new TableColumn<>("Select");
+	    selectColumn.setCellValueFactory(cellData -> {
+	        Invitation invitation = cellData.getValue();
+	        BooleanProperty selected = new SimpleBooleanProperty(false);
+	        // Bind checkbox to the selected property of each Invitation
+	        selected.addListener((observable, oldValue, newValue) -> {
+	            // Optionally update the Invitation object when the checkbox is toggled
+	            invitation.setSelected(newValue);  // You'll need to add a 'setSelected' method in Invitation model
+	        });
+	        return selected;
+	    });
+
+	    // Create the checkbox cell
+	    selectColumn.setCellFactory(col -> new CheckBoxTableCell<>());
 
 	    // Invitation ID column
 	    TableColumn<Invitation, String> invitationIdCol = new TableColumn<>("Invitation ID");
@@ -136,22 +125,22 @@ public class HomeView extends VBox{
 	    TableColumn<Invitation, String> eventIdCol = new TableColumn<>("Event ID");
 	    eventIdCol.setCellValueFactory(new PropertyValueFactory<>("event_id"));
 
-	    // Event Name column (custom logic to fetch event name)
+	    // Event Name column
 	    TableColumn<Invitation, String> eventNameCol = new TableColumn<>("Event Name");
 	    eventNameCol.setCellValueFactory(cellData -> {
-	        String eventId = cellData.getValue().getEvent_id(); // Get the event ID
-	        Event event = ec.getEventById(eventId); // Fetch the event object
-	        String eventName = (event != null) ? event.getEvent_name() : "Unknown Event"; // Handle null event
-	        return new SimpleStringProperty(eventName); // Wrap the value in a StringProperty
+	        String eventId = cellData.getValue().getEvent_id();
+	        Event event = ec.getEventById(eventId);
+	        String eventName = (event != null) ? event.getEvent_name() : "Unknown Event";
+	        return new SimpleStringProperty(eventName);
 	    });
 
-	    // Event Location column (custom logic to fetch event location)
+	    // Event Location column
 	    TableColumn<Invitation, String> eventLocCol = new TableColumn<>("Event Location");
 	    eventLocCol.setCellValueFactory(cellData -> {
-	        String eventId = cellData.getValue().getEvent_id(); // Get the event ID
-	        Event event = ec.getEventById(eventId); // Fetch the event object
-	        String eventLocation = (event != null) ? event.getEvent_location() : "Unknown Location"; // Handle null event
-	        return new SimpleStringProperty(eventLocation); // Wrap the value in a StringProperty
+	        String eventId = cellData.getValue().getEvent_id();
+	        Event event = ec.getEventById(eventId);
+	        String eventLocation = (event != null) ? event.getEvent_location() : "Unknown Location";
+	        return new SimpleStringProperty(eventLocation);
 	    });
 
 	    // Invitation Status column
@@ -160,13 +149,12 @@ public class HomeView extends VBox{
 
 	    // Add all columns to the TableView
 	    inviteTv.getColumns().clear();
-	    inviteTv.getColumns().addAll(
-	        invitationIdCol, eventIdCol, eventNameCol, eventLocCol, invitationStatusCol
-	    );
+	    inviteTv.getColumns().addAll(selectColumn, invitationIdCol, eventIdCol, eventNameCol, eventLocCol, invitationStatusCol);
 
 	    // Set the TableView items
 	    inviteTv.setItems(invites);
 	}
+
 	private void setAcceptTable() {
 	    // Fetch invitations for the current user
 		
@@ -185,48 +173,25 @@ public class HomeView extends VBox{
         acceptInviteTv.getColumns().clear();
         acceptInviteTv.getColumns().addAll(eventIdColumn, eventNameColumn, eventDateColumn);
         acceptInviteTv.setItems(acceptInvites);
-
 	}
 	
-
 	private void setLayout() {
-		this.getChildren().addAll(productLbl, productDescLbl, manageVendorBtn, basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
+		this.getChildren().add(0, nv);
+		this.setSpacing(0); 
+		//Pisahkan, buat controllernya sendiri!
+		if(Session.getInstance().getUserSession().getUser_role().equals("Guest")) {
+			this.getChildren().addAll(basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
+		}else if(Session.getInstance().getUserSession().getUser_role().equals("Vendor")) {
+			this.getChildren().addAll(productLbl, productDescLbl, manageVendorBtn, basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
+		}
+		
 	}
-//	private void addEvent() {
-//		String eventName;
-//		String eventDate;
-//		String eventLoc;
-//		String eventDesc;
-//		try {
-//			 eventName = eventNameTf.getText();
-//			 eventDate = eventDateTf.getText();
-//			 eventLoc = eventLocTf.getText();
-//			 eventDesc = eventDescTf.getText();
-//		} catch (Exception e) {
-//			 eventName = "";
-//			 eventDate = "";
-//			 eventLoc = "";
-//			 eventDesc = "";
-//		}
-//		String status = ec.createEvent(eventName, eventDate, eventLoc, eventDesc, Session.getInstance().getUserSession().getUser_id());
-//		if (status.equals("Event successfully created!")) {
-//			statusLbl.setText(status);
-//			setUpTable();
-//		} else {
-//			statusLbl.setText("");
-//			Alert alert = new Alert(Alert.AlertType.WARNING, status, ButtonType.OK);
-//            alert.showAndWait();
-//		}
-		
-		
-		
-//	}
+
 	private void AcceptInvite() {
         Invitation selectedInvite = inviteTv.getSelectionModel().getSelectedItem();
         
         if (selectedInvite != null) {
         	ic.acceptInvitation(selectedInvite.getEvent_id(), Session.getInstance().getUserSession().getUser_id());
-//        	setUpTable();
         	refresh();
             
         } else {
@@ -240,13 +205,16 @@ public class HomeView extends VBox{
 	}
 	
 	public HomeView() {
-		init();
-		setUpTable();
-		setAcceptTable();
-		if(Session.getInstance().getUserSession().getUser_role().equals("Vendor")) {
-			setUpProductLbl();
-		}
-		setLayout();
+	    init();
+	    setUpTable();
+	    setAcceptTable();
+	    if (Session.getInstance().getUserSession().getUser_role().equals("Vendor")) {
+	        setUpProductLbl();
+	    }
+	    setLayout();
+//	    stage.setScene(scene);
+//	    stage.show();
 	}
+
 	
 }

@@ -3,11 +3,11 @@ package database;
 import java.sql.*;
 
 public class Connect {
-	private final String USERNAME = "root";
-	private final String PASSWORD = "";
-	private final String DATABASE = "stellarfest";
-	private final String HOST = "localhost:3306";
-	private final String CONNECTION = String.format("jdbc:mysql://%s/%s", HOST, DATABASE);
+	private final static String USERNAME = "root";
+	private final static String PASSWORD = "";
+	private final static String DATABASE = "StellarFest";
+	private final static String HOST = "localhost:3306";
+	private final static String CONNECTION = String.format("jdbc:mysql://%s/%s", HOST, DATABASE);
 	
 	private Connection con;
 	private Statement st;
@@ -21,6 +21,18 @@ public class Connect {
 		else return connect;
 	}
 	
+	public static String getUSERNAME() {
+		return USERNAME;
+	}
+
+	public static String getPASSWORD() {
+		return PASSWORD;
+	}
+
+	public static String getCONNECTION() {
+		return CONNECTION;
+	}
+
 	private Connect() {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");

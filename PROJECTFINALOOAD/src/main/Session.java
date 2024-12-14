@@ -19,4 +19,9 @@ public class Session {
 	public void setUserSession(User userSession) {
 		UserSession = userSession;
 	}
+	
+	public void clearSession() {
+        UserSession = null; 
+    }
 }
+

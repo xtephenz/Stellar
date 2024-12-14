@@ -1,7 +1,5 @@
-/controller/
-/database/
-/main/
-/model/
-/module-info.class
 /view/
 /view_controller/
+/main/
+/database/
+/model/

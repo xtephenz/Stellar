@@ -17,7 +17,6 @@ public class LoginView extends VBox {
     private PasswordField passwordField;
     private Button submitButton, registerButton;
     private UserController userController;
-    Hyperlink link;
 
     public LoginView() {
         initializeComponents();
@@ -33,7 +32,6 @@ public class LoginView extends VBox {
         submitButton = new Button("Login");
         registerButton = new Button("Register");
         userController = new UserController();
-        link = new Hyperlink("Change profile");
     }
 
     private void configureComponents() {
@@ -69,7 +67,6 @@ public class LoginView extends VBox {
         String email = emailField.getText();
         String password = passwordField.getText();
         String status = userController.login(email, password);
-        
 
         if (status.equals("success")) {
             Session.getInstance().setUserSession(userController.getUserByEmail(email));
@@ -87,55 +84,3 @@ public class LoginView extends VBox {
         }
     }
 }
-
-//
-//public class LoginView extends VBox{
-//
-//	Label statusLbl;
-//	TextField emailTf, passwordTf;
-//	Button submitBtn;
-//	UserController uc;
-//	Button registerBtn;
-//	
-//	public void init() {
-//		emailTf = new TextField();
-//		passwordTf = new TextField();
-//		statusLbl = new Label();
-//		submitBtn = new Button("Login");
-//		uc = new UserController();
-//		registerBtn = new Button("Register");
-//		registerBtn.setOnMouseClicked(e->{
-//			ViewController.getInstance(null).navigateToRegister();
-//		});
-//		submitBtn.setOnMouseClicked(e -> {
-//			login();
-//		});
-//	}
-//	
-//	private void login() {
-//		String email = emailTf.getText();
-//		String password = passwordTf.getText();
-//		String status = uc.login(email, password);
-//		
-//		if(status.equals("success")) {
-//			Session.getInstance().setUserSession(uc.getUserByEmail(email));
-//			String userRole = Session.getInstance().getUserSession().getUser_role();
-//			if(userRole.equals("Admin")) {
-//				ViewController.getInstance(null).navigateToAdmin();
-//			} else if (userRole.equals("Guest")) {
-//				ViewController.getInstance(null).navigateToUserInvite();
-//			}
-//		}else {
-//			statusLbl.setText(status);
-//		}
-//	}
-//	
-//	public void setLayout() {
-//		this.getChildren().addAll(emailTf, passwordTf, statusLbl,submitBtn,registerBtn);
-//	}
-//	
-//	public LoginView() {
-//		init();
-//		setLayout();
-//	}
-//}

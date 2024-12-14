@@ -1,6 +1,10 @@
 package model;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import database.Connect;
 import javafx.beans.property.BooleanProperty;
@@ -65,37 +69,25 @@ public class User {
 	}
 	
 	public boolean changeProfile(String email, String name, String oldPassword, String newPassword) {
-		boolean isUpdated = false;
+		 boolean isUpdated = false;
 
-	    try {
-	        StringBuilder queryBuilder = new StringBuilder("UPDATE users SET ");
-	        String user_id = Session.getInstance().getUserSession().getUser_id();
-	        boolean firstField = true;
+		    String query = "UPDATE users SET user_email = ?, user_name = ?, user_password = ? WHERE user_id = ?";
+		    try (Connection con = DriverManager.getConnection(Connect.getCONNECTION(), Connect.getUSERNAME(), Connect.getPASSWORD());
+		         PreparedStatement pstmt = con.prepareStatement(query)) {
 
-	        if (email != null && !email.isEmpty()) {
-	            queryBuilder.append("user_email = '").append(email).append("'");
-	            firstField = false;
-	        }
-	        if (name != null && !name.isEmpty()) {
-	            if (!firstField) queryBuilder.append(", ");
-	            queryBuilder.append("user_name = '").append(name).append("'");
-	            firstField = false;
-	        }
-	        if (newPassword != null && !newPassword.isEmpty()) {
-	            if (!firstField) queryBuilder.append(", ");
-	            queryBuilder.append("user_password = '").append(newPassword).append("'");
-	            firstField = false;
-	        }
-	        queryBuilder.append(" WHERE user_id = ").append(user_id);
+		        pstmt.setString(1, email);
+		        pstmt.setString(2, name);
+		        pstmt.setString(3, newPassword);
+		        pstmt.setString(4, Session.getInstance().getUserSession().getUser_id());
 
-	        String query = queryBuilder.toString();
-	        int result = Connect.getInstance().execute(query);
-	        isUpdated = result > 0;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
+		        int result = pstmt.executeUpdate();
+		        isUpdated = result > 0;
 
-	    return isUpdated;
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
+
+		    return isUpdated;
 	}
 	public User getUserByEmail(String email) {
 		User user = null; 
