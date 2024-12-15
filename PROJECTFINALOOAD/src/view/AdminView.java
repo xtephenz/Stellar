@@ -29,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 
 public class AdminView extends VBox {
+	public static String CURRENT_LOCATION = "adminHP";
 
     private Label titleLabel, userLabel;
     private TableView<User> userTable;
@@ -36,6 +37,7 @@ public class AdminView extends VBox {
     private Button deleteButton, viewEventsButton;
     private UserController userController;
     private AdminController adminController;
+    private NavbarView navbarView;
 
     public AdminView() {
         initializeComponents();
@@ -45,6 +47,7 @@ public class AdminView extends VBox {
     }
 
     private void initializeComponents() {
+    	navbarView = new NavbarView();
         titleLabel = new Label("Admin Panel");
         userLabel = new Label("Users List");
         userTable = new TableView<>();
@@ -70,6 +73,7 @@ public class AdminView extends VBox {
         buttonBox.setStyle("-fx-alignment: center;");
 
         this.getChildren().addAll(
+        	navbarView,	
             titleLabel,
             userLabel,
             userTable,
@@ -122,91 +126,3 @@ public class AdminView extends VBox {
         }
     }
 }
-//public class AdminView extends VBox{
-//	TextField nameTf, passwordTf;
-//	Button submitBtn;
-//	Label userLbl;
-//	TableView<User> userTv;
-//	TableView<Event> eventTv;
-//	ObservableList<User> users;
-//	UserController uc = new UserController();
-//	AdminController ac = new AdminController();
-//	Button deleteBtn;
-//	Button eventBtn;
-//	
-//	private void init() {
-////		nameTf = new TextField();
-////		passwordTf = new TextField();
-////		submitBtn = new Button("Add User");
-//		userTv = new TableView<User>();
-//		userLbl = new Label("Users");
-//		deleteBtn = new Button("Delete");
-//		deleteBtn.setOnMouseClicked(e->{
-//			deleteSelectedRow();
-//		});
-//		eventBtn = new Button("View Events");
-//		eventBtn.setOnMouseClicked(e->{
-//			ViewController.getInstance(null).navigateToEvent();
-//		});
-//	}
-//	
-//	private void setUserTable() {
-//		if(Session.getInstance().getUserSession().getUser_role().equals("Admin")) {
-//			users = FXCollections.observableArrayList(ac.getAllUsers());
-//			System.out.println("aaaaa");
-//		} else {
-//			return;
-//		}
-//		TableColumn<User, String> userIdCol = new TableColumn<User, String>("User ID");
-//		userIdCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_id"));
-//		
-//		TableColumn<User, String> emailCol = new TableColumn<User, String>("User Email");
-//		emailCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_email"));
-//		
-//		TableColumn<User, String> usernameCol = new TableColumn<User, String>("Username");
-//		usernameCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_name"));
-//		
-//		TableColumn<User, String> passwordCol = new TableColumn<User, String>("Password");
-//		passwordCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_password"));
-//
-//		TableColumn<User, String> roleCol = new TableColumn<User, String>("Role");
-//		roleCol.setCellValueFactory(new PropertyValueFactory<User, String>("user_role"));
-//		//TableColumn<User, Boolean> selectCol = new TableColumn<>("Select");
-//		//selectCol.setCellValueFactory(data -> data.getValue().selectedProperty()); // Binding to BooleanProperty
-//		//selectCol.setCellFactory(CheckBoxTableCell.forTableColumn(selectCol));
-//        
-//		userTv.getColumns().addAll(userIdCol, emailCol, usernameCol, passwordCol, roleCol);
-//		userTv.setItems(users);
-//	}
-//	
-//	private void setLayout() {
-//		this.getChildren().addAll(userLbl, userTv, deleteBtn, eventBtn);
-//	}
-//	private void deleteSelectedRow() {
-//        User selectedEvent = userTv.getSelectionModel().getSelectedItem();
-//        if (selectedEvent != null) {
-//            // Remove from TableView
-//            users.remove(selectedEvent);
-//
-//            // Delete from Database
-//            String deleteQuery = String.format("DELETE FROM users WHERE user_id = '%s'", selectedEvent.getUser_id());
-//            try {
-//                Connect.getInstance().execute(deleteQuery); // Adjust for your database utility class
-//            } catch (Exception ex) {
-//                ex.printStackTrace();
-//            }
-//        } else {
-//            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a row to delete.", ButtonType.OK);
-//            alert.showAndWait();
-//        }
-//    }
-//
-//	
-//	public AdminView() {
-//		init();
-//		setUserTable();
-//		
-//		setLayout();
-//	}
-//	
-//}

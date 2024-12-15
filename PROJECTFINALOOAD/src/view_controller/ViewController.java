@@ -58,7 +58,6 @@ public class ViewController {
 	public void navigateToEventDetails(Event event) {
         navigateTo(new EventDetailsView(event));
     }
-
 	public void navigateToInvite(Event event) {
         navigateTo(new InvitationView(event));
     }

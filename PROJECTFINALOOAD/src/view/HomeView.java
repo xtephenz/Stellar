@@ -212,8 +212,6 @@ public class HomeView extends VBox{
 	        setUpProductLbl();
 	    }
 	    setLayout();
-//	    stage.setScene(scene);
-//	    stage.show();
 	}
 
 	

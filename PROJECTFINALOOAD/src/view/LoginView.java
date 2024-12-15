@@ -15,7 +15,8 @@ public class LoginView extends VBox {
     private Label titleLabel, statusLabel;
     private TextField emailField;
     private PasswordField passwordField;
-    private Button submitButton, registerButton;
+    private Button submitButton;
+    private Hyperlink registerButton;
     private UserController userController;
 
     public LoginView() {
@@ -30,7 +31,7 @@ public class LoginView extends VBox {
         passwordField = new PasswordField();
         statusLabel = new Label();
         submitButton = new Button("Login");
-        registerButton = new Button("Register");
+        registerButton = new Hyperlink("Haven't registered yet?");
         userController = new UserController();
     }
 

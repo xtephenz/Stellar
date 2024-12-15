@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import main.Session;
 import view_controller.ViewController;
 
 public class ChangeProfileView extends VBox{
@@ -57,7 +58,7 @@ public class ChangeProfileView extends VBox{
 
         // Buttons
         saveButton = new Button("Save Changes");
-		 backButton = new Button("Back to Homepage");
+		backButton = new Button("Back to Homepage");
 	        
 	        // Set action for back button
 	       
@@ -65,9 +66,19 @@ public class ChangeProfileView extends VBox{
 	
 	private void setAction() {
 		saveButton.setOnAction(e -> saveChanges());
-		 backButton.setOnAction(e -> {
+		if(Session.getInstance().getUserSession().getUser_role().equals("Admin")) {
+			backButton.setOnAction(e -> {
+	            ViewController.getInstance(null).navigateToAdmin();
+	        });
+		}else if(Session.getInstance().getUserSession().getUser_role().equals("Event Organizer")) {
+			backButton.setOnAction(e -> {
+	            ViewController.getInstance(null).navigateToEvent();
+	        });
+		}else {
+			backButton.setOnAction(e -> {
 	            ViewController.getInstance(null).navigateToUserHome();
 	        });
+		}
 	}
 	private void saveChanges() {
 		 String name = nameField.getText().trim();
