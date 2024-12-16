@@ -35,9 +35,10 @@ public class EventView extends VBox {
     private TextField eventNameField, eventDateField, eventLocationField, eventDescriptionField;
     private TableView<Event> eventTable;
     private ObservableList<Event> events;
-    private Button addEventButton, viewEventDetailsButton;
+    private Button addEventButton, viewEventDetailsButton,deleteBtn;
     private EventController eventController;
     private EventOrganizerController eoc;
+    private AdminController ac;
     private NavbarView navbarView;
 
     public EventView() {
@@ -61,9 +62,11 @@ public class EventView extends VBox {
 
         addEventButton = new Button("Add Event");
         viewEventDetailsButton = new Button("View Event Details");
+        deleteBtn = new Button("Delete Event");
 
         eventController = new EventController();
         eoc = new EventOrganizerController();
+        ac = new AdminController();
         
         navbarView = new NavbarView();
     }
@@ -78,7 +81,7 @@ public class EventView extends VBox {
         eventDescriptionField.setPromptText("Event Description");
 
         addEventButton.setOnMouseClicked(event -> addEvent());
-
+        deleteBtn.setOnMouseClicked(e->deleteEvent());
         viewEventDetailsButton.setOnMouseClicked(event -> selectEvent());
     }
 
@@ -88,7 +91,9 @@ public class EventView extends VBox {
 
         HBox buttonBox = new HBox(10, viewEventDetailsButton);
         buttonBox.setStyle("-fx-alignment: center; -fx-padding: 10;");
-
+        if (Session.getInstance().getUserSession().getUser_role().equals("Admin")) {
+        	buttonBox = new HBox(10, viewEventDetailsButton, deleteBtn);
+        }
         this.getChildren().addAll(
         	navbarView,
             titleLabel,
@@ -119,7 +124,7 @@ public class EventView extends VBox {
 
         TableColumn<Event, String> eventDateColumn = new TableColumn<>("Event Date");
         eventDateColumn.setCellValueFactory(new PropertyValueFactory<>("event_date"));
-
+        eventTable.getColumns().clear();
         eventTable.getColumns().addAll(eventIdColumn, eventNameColumn, eventDateColumn);
         eventTable.setItems(events);
     }
@@ -151,5 +156,15 @@ public class EventView extends VBox {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event.", ButtonType.OK);
             alert.showAndWait();
         }
+    }
+    private void deleteEvent() {
+    	Event selectedEvent = eventTable.getSelectionModel().getSelectedItem();
+    	if (selectedEvent != null) {
+    		ac.deleteEvent(selectedEvent.getEvent_id());
+    		setEventTable();
+    	} else {
+    		Alert alert = new Alert(Alert.AlertType.WARNING, "Please select an event.", ButtonType.OK);
+    		alert.showAndWait();
+    	}
     }
 }

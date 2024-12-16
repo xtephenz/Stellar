@@ -38,7 +38,7 @@ public class InvitationView extends VBox {
     AdminController ac = new AdminController();
     EventOrganizerController eoc = new EventOrganizerController();
     Button addGuest;
-    Button addVendor;
+    Button addVendor, backBtn;
     InvitationController ic = new InvitationController();
     Event selectedEvent = new Event();
 
@@ -55,7 +55,8 @@ public class InvitationView extends VBox {
         vendorTv = new TableView<>();
         addGuest = new Button("Add Guest");
         addVendor = new Button("Add Vendor");
-
+        backBtn = new Button("Back");
+        backBtn.setOnMouseClicked(e->ViewController.getInstance(null).goBack());
         addGuest.setOnMouseClicked(e -> {
             selectGuest();
             refreshPage(); // Refresh the page after adding a guest

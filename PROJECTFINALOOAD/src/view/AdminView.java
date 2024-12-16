@@ -100,26 +100,20 @@ public class AdminView extends VBox {
         TableColumn<User, String> usernameColumn = new TableColumn<>("Username");
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("user_name"));
 
-        TableColumn<User, String> passwordColumn = new TableColumn<>("Password");
-        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("user_password"));
+//        TableColumn<User, String> passwordColumn = new TableColumn<>("Password");
+//        passwordColumn.setCellValueFactory(new PropertyValueFactory<>("user_password"));
 
         TableColumn<User, String> roleColumn = new TableColumn<>("Role");
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("user_role"));
-
-        userTable.getColumns().addAll(userIdColumn, emailColumn, usernameColumn, passwordColumn, roleColumn);
+        userTable.getColumns().clear();
+        userTable.getColumns().addAll(userIdColumn, emailColumn, usernameColumn, roleColumn);
         userTable.setItems(users);
     }
 
     private void deleteSelectedRow() {
         User selectedUser = userTable.getSelectionModel().getSelectedItem();
         if (selectedUser != null) {
-            users.remove(selectedUser);
-            String deleteQuery = String.format("DELETE FROM users WHERE user_id = '%s'", selectedUser.getUser_id());
-            try {
-                Connect.getInstance().execute(deleteQuery);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
+            adminController.deleteUser(selectedUser.getUser_id());
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a user to delete.", ButtonType.OK);
             alert.showAndWait();

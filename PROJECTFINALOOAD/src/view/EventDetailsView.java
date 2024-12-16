@@ -128,9 +128,10 @@ public class EventDetailsView extends VBox {
                     eventDetailsBox,
                     tableBox,
                     buttonBox,
+                    
 
                     changeEventNameTf,
-                    changeEventNameBtn
+                    changeEventNameBtn,buttonBox2
                 );
         } else {
         	this.getChildren().addAll(
