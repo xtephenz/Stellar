@@ -31,17 +31,23 @@ public class EventController {
 
 		if (eventName.equals("")) {
 			return "Event name can not be empty!";
-		} else if (date.equals(today)) {
+		} 
+		if (date.equals(today)) {
 			return "Date must be in the future!";
-		} else if (location.equals("")) {
+		} 
+		if (location.equals("")) {
 			return "Location can not be empty!";
-		} else if (location.length()<5) {
+		}  
+		if (location.length()<5) {
 			return "Location must be minimum length of 5 characters!";
-		} else if (description.equals("")) {
+		} 
+		if (description.equals("")) {
 			return "Description can not be empty!";
-		} else if (description.length()>200) {
+		}
+		if (description.length()>200) {
 			return "Description has a maximum length of 200 characters!";
-		} else if(!event.createEvent(eventName, date, location, description, organizerID)){
+		}
+		if(!event.createEvent(eventName, date, location, description, organizerID)){
 			return "Something went wrong!";
 		}
 		return "Event successfully created!";
