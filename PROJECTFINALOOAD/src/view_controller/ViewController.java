@@ -6,6 +6,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Event;
 import view.AppView;
+import view.ChangeProfileView;
 import view.EventDetailsView;
 import view.EventView;
 import view.HomeView;
@@ -15,6 +16,7 @@ import view.LoginView;
 import view.ManageVendorView;
 import view.RegisterView;
 import view.UserInviteView;
+import javafx.stage.Stage;
 
 public class ViewController {
 	AppView appView;
@@ -36,67 +38,62 @@ public class ViewController {
 	}
 	
 	public void navigateToLogin() {
-		LoginView login = new LoginView();
-		pages.add(login);
-		appView.getContainer().setCenter(login);
-	}
-	
-	public void navigateToAdmin() {
-		AdminView homeView = new AdminView();
-		pages.add(homeView);
-		appView.getContainer().setCenter(homeView);
-	}
-	public void navigateToRegister() {
-		RegisterView RegisterView = new RegisterView();
-		pages.add(RegisterView);
-		appView.getContainer().setCenter(RegisterView);
-	}
-	
+        navigateTo(new LoginView());
+    }
+    
+    public void navigateToAdmin() {
+        navigateTo(new AdminView());
+    }
 
-	public void navigateToEvent() {
-		EventView eventView = new EventView();
-		pages.add(eventView);
-		appView.getContainer().setCenter(eventView);
-	}
+    public void navigateToRegister() {
+        navigateTo(new RegisterView());
+    }  
+    public void navigateToEvent() {
+        navigateTo(new EventView());
+    }
 
+	public void navigateToChangeProfile() {
+		navigateTo(new ChangeProfileView());
+	}
 	public void navigateToEventDetails(Event event) {
-		EventDetailsView eventDetailsView = new EventDetailsView(event);
-//		eventDetailsView.setSelectedEvent(event);
-		pages.add(eventDetailsView);
-		appView.getContainer().setCenter(eventDetailsView);
-	}
+        navigateTo(new EventDetailsView(event));
+    }
 	public void navigateToInvite(Event event) {
-		InvitationView inviteView = new InvitationView(event);
-		pages.add(inviteView);
-		appView.getContainer().setCenter(inviteView);
-	}
-	public void navigateToUserHome() {
-		HomeView userInviteView = new HomeView();
-		pages.add(userInviteView);
-		appView.getContainer().setCenter(userInviteView);
-	}
+        navigateTo(new InvitationView(event));
+    }
+	 public void navigateToUserHome() {
+	        navigateTo(new HomeView());
+	    }
 
-	public void navigateToVendorView() {
-		ManageVendorView mvv = new ManageVendorView();
-		pages.add(mvv);
-		appView.getContainer().setCenter(mvv);
+	public void navigateToVendor() {
+		try {
+            System.out.println("Navigating to ManageVendorView...");
+            navigateTo(new ManageVendorView());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 	public void goBack() {
-	    if (!pages.isEmpty()) {
-	        // Remove the current page
-	        pages.pop();
-	        
-	        // Check if there is a previous page
-	        if (!pages.isEmpty()) {
-	            // Display the previous page
-	            VBox previousPage = pages.peek();
-	            appView.getContainer().setCenter(previousPage);
-	        } else {
-	            // Optional: Handle the case where no more pages exist
-	            System.out.println("No more pages to go back to.");
-	        }
-	    } else {
-	        System.out.println("No pages in the history.");
-	    }
+		if (pages.size() > 1) {
+            pages.pop(); // Remove current page
+            VBox previousPage = pages.peek();
+            appView.getContainer().setCenter(previousPage);
+        } else {
+            navigateToLogin();  // Navigate to login if no pages are left in stack
+        }
 	}
+	
+	private void printStack() {
+	    System.out.println("Current Stack:");
+	    for (VBox page : pages) {
+	        System.out.println("- " + page.getClass().getSimpleName());
+	    }
+	    System.out.println("End of Stack");
+	}
+	private void navigateTo(VBox view) {
+        pages.add(view);
+        appView.getContainer().setCenter(view);
+        printStack();
+    }
+
 }

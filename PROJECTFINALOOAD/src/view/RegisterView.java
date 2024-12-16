@@ -22,7 +22,8 @@ public class RegisterView extends VBox {
     private Label titleLabel, statusLabel;
     private TextField emailField, nameField;
     private PasswordField passwordField;
-    private Button submitButton, loginButton;
+    private Button submitButton;
+    private Hyperlink loginButton;
     private ComboBox<String> roleComboBox;
     private UserController userController;
 
@@ -39,7 +40,7 @@ public class RegisterView extends VBox {
         passwordField = new PasswordField();
         statusLabel = new Label();
         submitButton = new Button("Register");
-        loginButton = new Button("Login");
+        loginButton = new Hyperlink("Already have an account?");
         roleComboBox = new ComboBox<>();
         userController = new UserController();
     }
@@ -100,72 +101,4 @@ public class RegisterView extends VBox {
         }
     }
 }
-//
-//public class RegisterView extends VBox{
-//
-//	Label statusLbl;
-//	TextField emailTf, nameTf, passwordTf;
-//	Button submitBtn;
-//	ComboBox<String> roleComboBox;
-//	Button loginBtn;
-//	UserController uc;
-//	
-//	public void init() {
-//		emailTf = new TextField("Email");
-//		nameTf = new TextField("Name");
-//		passwordTf = new TextField("Password");
-//		statusLbl = new Label();
-//		submitBtn = new Button("Register");
-//		uc = new UserController();
-//		roleComboBox = new ComboBox<>();
-//		loginBtn = new Button("Login");
-//		loginBtn.setOnMouseClicked(e->{
-//			ViewController.getInstance(null).navigateToLogin();
-//		});
-//		submitBtn.setOnMouseClicked(e -> {
-//			register();
-//		});
-//	}
-//
-//	public void setLayout() {
-//		this.getChildren().add(emailTf);
-//		this.getChildren().addAll(nameTf, passwordTf, statusLbl, roleComboBox, submitBtn, loginBtn);
-//	}
-//	
-//	public RegisterView() {
-//		init();
-//		setLayout();
-//		setComboBox();
-//	}
-//	private void setComboBox() {
-//		roleComboBox.getItems().addAll("Guest", "Admin", "Vendor", "Event Organizer");
-//		roleComboBox.setPromptText("Select Role");
-//	}
-//	
-//	private void register() {
-//		String email;
-//		String username;
-//		String password;
-//		try {
-//			email = emailTf.getText();
-//			username = nameTf.getText();
-//			password = passwordTf.getText();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			email = "";
-//			username = "";
-//			password = "";
-//			//e.printStackTrace();
-//		}
-//		String role = roleComboBox.getValue(); 
-//		String status = uc.register(email, username, password, role);
-//		
-//		if(status.equals("success")) {
-//			Session.getInstance().setUserSession(uc.getUserByEmail(email));
-//			ViewController.getInstance(null).navigateToLogin();			
-//		}else {
-//			statusLbl.setText(status);
-//		}
-//	}
-//	
-//}
+

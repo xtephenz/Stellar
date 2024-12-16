@@ -44,7 +44,7 @@ public class ManageVendorView extends VBox {
         productDescField.setPromptText("Product Description");
 
         backButton.setOnMouseClicked(event -> 
-            ViewController.getInstance(null).navigateToRegister()
+            ViewController.getInstance(null).goBack()
         );
 
         submitButton.setOnMouseClicked(event -> login());
@@ -61,8 +61,6 @@ public class ManageVendorView extends VBox {
             buttonBox,
             statusLabel
         );
-
-        this.setSpacing(10);
         this.setStyle("-fx-padding: 20; -fx-alignment: center;");
     }
 

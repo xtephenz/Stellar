@@ -14,6 +14,9 @@ public class EventController {
 	public EventController() {
 		// TODO Auto-generated constructor stub
 	}
+	public boolean updateEvent(String eventID, String eventName, String date, String location, String description) {
+        return event.updateEvent(eventID, eventName, date, location, description);
+    }
 	public String createEvent(String eventName, String date, String location, String description, String organizerID) {
 		try {
 	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjusted format

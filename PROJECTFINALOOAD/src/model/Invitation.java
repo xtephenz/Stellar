@@ -5,12 +5,16 @@ import java.util.Vector;
 
 import controller.UserController;
 import database.Connect;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 public class Invitation {
-    String invitation_id;
-    String event_id;
-    String user_id;
-    String invitation_status;
-    String invitation_role;
+    private String invitation_id;
+    private String event_id;
+    private String user_id;
+    private String invitation_status;
+    private String invitation_role;
+    private BooleanProperty selected = new SimpleBooleanProperty(false); // New property for checkbox selection
 
     UserController uc = new UserController();
     private static final String ID_PREFIX = "INV";
@@ -38,7 +42,6 @@ public class Invitation {
 
     // Create a new invitation
     public boolean createInvitation(String eventID, String userID, String invitationRole) {
-    	System.out.println("boo");
         boolean isCreated = false;
         try {
             String invitationId = generateNextInvitationId(); // Generate unique ID
@@ -141,5 +144,18 @@ public class Invitation {
 
     public void setInvitation_role(String invitation_role) {
         this.invitation_role = invitation_role;
+    }
+
+    // New Getters and Setters for selected property
+    public boolean isSelected() {
+        return selected.get();
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
+    }
+
+    public BooleanProperty selectedProperty() {
+        return selected;
     }
 }
