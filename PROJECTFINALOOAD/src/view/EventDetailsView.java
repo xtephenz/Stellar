@@ -57,7 +57,8 @@ public class EventDetailsView extends VBox {
         setGuestTable();
         setVendorTable();
         setEventDetails();
-        
+        guestTv.setEditable(true);
+        vendorTv.setEditable(true);
     }
 
     private void initializeComponents() {
@@ -150,6 +151,10 @@ public class EventDetailsView extends VBox {
     private void setGuestTable() {
         guests = FXCollections.observableArrayList(eoc.getGuestByTransactionID(selectedEvent.getEvent_id()));
 
+        TableColumn<Guest, Boolean> guestCheckCol = new TableColumn<>("Select");
+        guestCheckCol.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());  // Use property for binding checkbox
+        guestCheckCol.setCellFactory(CheckBoxTableCell.forTableColumn(guestCheckCol));  // Set as checkbox column
+
         TableColumn<Guest, String> guestIdCol = new TableColumn<>("Guest ID");
         guestIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
 
@@ -158,36 +163,40 @@ public class EventDetailsView extends VBox {
 
         TableColumn<Guest, String> guestNameCol = new TableColumn<>("Guest Name");
         guestNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
-        
-        guestTv.getColumns().addAll(guestIdCol, guestEmailCol, guestNameCol);
 
-        if (guests != null && !guests.isEmpty()) {
-            guestTv.setItems(guests);
-        }
+        guestTv.getColumns().clear();  // Clear existing columns
+        guestTv.getColumns().addAll(guestCheckCol, guestIdCol, guestEmailCol, guestNameCol);  // Add checkbox column
+        guestTv.setItems(guests);
+        guestTv.setStyle("-fx-padding: 10; -fx-alignment: center;");
     }
 
-    private void setVendorTable() {
-        vendors = FXCollections.observableArrayList(eoc.getVendorByTransactionID(selectedEvent.getEvent_id()));
+private void setVendorTable() {
+    vendors = FXCollections.observableArrayList(eoc.getVendorByTransactionID(selectedEvent.getEvent_id()));
 
-        TableColumn<Vendor, String> vendorIdCol = new TableColumn<>("Vendor ID");
-        vendorIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
+    TableColumn<Vendor, Boolean> vendorCheckCol = new TableColumn<>("Select");
+    vendorCheckCol.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());  // Use property for binding checkbox
+    vendorCheckCol.setCellFactory(CheckBoxTableCell.forTableColumn(vendorCheckCol));  // Set as checkbox column
 
-        TableColumn<Vendor, String> vendorEmailCol = new TableColumn<>("Vendor Email");
-        vendorEmailCol.setCellValueFactory(new PropertyValueFactory<>("user_email"));
+    TableColumn<Vendor, String> vendorIdCol = new TableColumn<>("Vendor ID");
+    vendorIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
 
-        TableColumn<Vendor, String> vendorNameCol = new TableColumn<>("Vendor Name");
-        vendorNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
-        TableColumn<Vendor, String> vendorProductCol = new TableColumn<>("Vendor Product");
-        vendorProductCol.setCellValueFactory(new PropertyValueFactory<>("product_name"));
-        TableColumn<Vendor, String> vendorProductDescCol = new TableColumn<>("Vendor Product Description");
-        vendorProductDescCol.setCellValueFactory(new PropertyValueFactory<>("product_description"));
+    TableColumn<Vendor, String> vendorEmailCol = new TableColumn<>("Vendor Email");
+    vendorEmailCol.setCellValueFactory(new PropertyValueFactory<>("user_email"));
 
-        vendorTv.getColumns().addAll(vendorIdCol, vendorEmailCol, vendorNameCol,vendorProductCol,vendorProductDescCol);
+    TableColumn<Vendor, String> vendorNameCol = new TableColumn<>("Vendor Name");
+    vendorNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
 
-        if (vendors != null && !vendors.isEmpty()) {
-            vendorTv.setItems(vendors);
-        }
-    }
+    TableColumn<Vendor, String> vendorProductCol = new TableColumn<>("Vendor Product");
+    vendorProductCol.setCellValueFactory(new PropertyValueFactory<>("product_name"));
+
+    TableColumn<Vendor, String> vendorProductDescCol = new TableColumn<>("Vendor Product Description");
+    vendorProductDescCol.setCellValueFactory(new PropertyValueFactory<>("product_description"));
+
+    vendorTv.getColumns().clear();  // Clear existing columns
+    vendorTv.getColumns().addAll(vendorCheckCol, vendorIdCol, vendorEmailCol, vendorNameCol, vendorProductCol, vendorProductDescCol);  // Add checkbox column
+    vendorTv.setItems(vendors);
+    vendorTv.setStyle("-fx-padding: 10; -fx-alignment: center;");
+}
 
     private void setEventDetails() {
     	this.selectedEvent = ec.getEventById(selectedEvent.getEvent_id());
