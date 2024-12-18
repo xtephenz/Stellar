@@ -50,6 +50,8 @@ public class InvitationView extends VBox {
         setLayout();
         setGuestTable();
         setVendorTable();
+        guestTv.setEditable(true);
+        vendorTv.setEditable(true);
     }
 
     private void init() {
@@ -61,18 +63,23 @@ public class InvitationView extends VBox {
         backBtn = new Button("Back");
         backBtn.setOnMouseClicked(e->ViewController.getInstance(null).goBack());
         addGuest.setOnMouseClicked(e -> {
-            selectGuest();
-            refreshPage(); // Refresh the page after adding a guest
+            selectGuest();  // Kirim undangan untuk semua tamu yang terpilih
+            refreshPage();  // Refresh halaman setelah mengundang tamu
         });
 
         addVendor.setOnMouseClicked(e -> {
-            selectVendor();
-            refreshPage(); // Refresh the page after adding a vendor
+            selectVendor();  // Kirim undangan untuk semua vendor yang terpilih
+            refreshPage();  // Refresh halaman setelah mengundang vendor
         });
+
     }
 
     private void setGuestTable() {
         guests = FXCollections.observableArrayList(eoc.getGuests(this.selectedEvent.getEvent_id()));
+
+        TableColumn<Guest, Boolean> guestSelectCol = new TableColumn<>("Select");
+        guestSelectCol.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
+        guestSelectCol.setCellFactory(CheckBoxTableCell.forTableColumn(guestSelectCol));
 
         TableColumn<Guest, String> guestIdCol = new TableColumn<>("Guest ID");
         guestIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
@@ -84,13 +91,17 @@ public class InvitationView extends VBox {
         guestNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
 
         guestTv.getColumns().clear();  // Clear existing columns
-        guestTv.getColumns().addAll(guestIdCol, guestEmailCol, guestNameCol);
+        guestTv.getColumns().addAll(guestSelectCol, guestIdCol, guestEmailCol, guestNameCol);
         guestTv.setItems(guests);
         guestTv.setStyle("-fx-padding: 10; -fx-alignment: center;");
     }
 
     private void setVendorTable() {
         vendors = FXCollections.observableArrayList(eoc.getVendors(this.selectedEvent.getEvent_id()));
+
+        TableColumn<Vendor, Boolean> vendorSelectCol = new TableColumn<>("Select");
+        vendorSelectCol.setCellValueFactory(cellData -> cellData.getValue().selectedProperty());
+        vendorSelectCol.setCellFactory(CheckBoxTableCell.forTableColumn(vendorSelectCol));
 
         TableColumn<Vendor, String> vendorIdCol = new TableColumn<>("Vendor ID");
         vendorIdCol.setCellValueFactory(new PropertyValueFactory<>("user_id"));
@@ -102,10 +113,11 @@ public class InvitationView extends VBox {
         vendorNameCol.setCellValueFactory(new PropertyValueFactory<>("user_name"));
 
         vendorTv.getColumns().clear();  // Clear existing columns
-        vendorTv.getColumns().addAll(vendorIdCol, vendorEmailCol, vendorNameCol);
+        vendorTv.getColumns().addAll(vendorSelectCol, vendorIdCol, vendorEmailCol, vendorNameCol);
         vendorTv.setItems(vendors);
         vendorTv.setStyle("-fx-padding: 10; -fx-alignment: center;");
     }
+
 
     private void setLayout() {
         // Styling the main container
@@ -126,24 +138,23 @@ public class InvitationView extends VBox {
     }
 
     private void selectGuest() {
-        Guest selectedGuest = guestTv.getSelectionModel().getSelectedItem();
-
-        if (selectedGuest != null) {
-            ic.sendInvitation(selectedEvent.getEvent_id(), selectedGuest.getUser_email());
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select guest.", ButtonType.OK);
-            alert.showAndWait();
+        // Loop melalui semua tamu
+        for (Guest guest : guests) {
+            if (guest.selectedProperty().get()) {  // Cek jika checkbox tamu tercentang
+                // Kirim undangan ke tamu yang terpilih
+                ic.sendInvitation(selectedEvent.getEvent_id(), guest.getUser_email());
+            }
         }
     }
 
-    private void selectVendor() {
-        Vendor selectedVendor = vendorTv.getSelectionModel().getSelectedItem();
 
-        if (selectedVendor != null) {
-            ic.sendInvitation(selectedEvent.getEvent_id(), selectedVendor.getUser_email());
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "Please select vendor.", ButtonType.OK);
-            alert.showAndWait();
+    private void selectVendor() {
+        // Loop melalui semua vendor
+        for (Vendor vendor : vendors) {
+            if (vendor.selectedProperty().get()) {  // Cek jika checkbox vendor tercentang
+                // Kirim undangan ke vendor yang terpilih
+                ic.sendInvitation(selectedEvent.getEvent_id(), vendor.getUser_email());
+            }
         }
     }
 
