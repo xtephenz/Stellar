@@ -6,12 +6,27 @@ import java.util.Vector;
 import controller.InvitationController;
 import controller.UserController;
 import database.Connect;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import main.Session;
 
 public class Vendor extends User {
 	private String accepted_invitations;
 	private InvitationController ic = new InvitationController();
 	private UserController uc = new UserController();
+	private BooleanProperty selected = new SimpleBooleanProperty(false);
+
+    public BooleanProperty selectedProperty() {
+        return selected;
+    }
+
+    public boolean isSelected() {
+        return selected.get();
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected.set(selected);
+    }
 	public void acceptInvitation(String eventID) {
 		ic.acceptInvitation(eventID, this.getUser_id());
 	}
