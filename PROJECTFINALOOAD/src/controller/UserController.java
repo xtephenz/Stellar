@@ -6,7 +6,8 @@ public class UserController {
 	public String register(String email, String name, String password, String role) {
 		if (getUserByEmail(email)!=null) {
         	return "Email is already Taken!";
-        } else if (getUserByUsername(name)!=null) {
+        } 
+		if (getUserByUsername(name)!=null) {
         	return "Username is already Taken!";
         }
 		String registerInputStatus = checkRegisterInput(email, name, password);

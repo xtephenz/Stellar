@@ -96,9 +96,7 @@ public class EventDetailsView extends VBox {
             ViewController.getInstance(null).navigateToInvite(selectedEvent);
         });
         backButton = new Button("Back");
-        backButton.setOnMouseClicked(event ->{
-        	ViewController.getInstance(null).navigateToUserHome();
-        });
+        backButton.setOnMouseClicked(e->ViewController.getInstance(null).goBack());
     }
 
     private void configureComponents() {
@@ -128,9 +126,10 @@ public class EventDetailsView extends VBox {
                     eventDetailsBox,
                     tableBox,
                     buttonBox,
+                    
 
                     changeEventNameTf,
-                    changeEventNameBtn
+                    changeEventNameBtn,buttonBox2
                 );
         } else {
         	this.getChildren().addAll(

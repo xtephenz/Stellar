@@ -23,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import main.Session;
@@ -39,7 +40,7 @@ public class HomeView extends VBox{
 	
 	TextField eventNameTf, eventDateTf, eventLocTf, eventDescTf;
 	Label productLbl, productDescLbl;
-	Button submitBtn;
+	Button submitBtn, refreshBtn;
 	Label basicLbl, statusLbl;
 	TableView<Invitation> inviteTv;
 	TableView<Event> acceptInviteTv;
@@ -84,6 +85,8 @@ public class HomeView extends VBox{
 		acceptInviteTv = new TableView<Event>();
 		productLbl = new Label();
 		productDescLbl = new Label();
+		refreshBtn = new Button("Refresh Product");
+		refreshBtn.setOnMouseClicked(e->setUpProductLbl());
 		manageVendorBtn.setOnMouseClicked(e -> {
 	        ViewController.getInstance(null).navigateToVendor();
 	    });
@@ -98,8 +101,9 @@ public class HomeView extends VBox{
 	    setAcceptTable();
 	}
 	private void setUpProductLbl() {
-		productLbl.setText("Your Product: "+Session.getInstance().getUserSession().getProduct_name());
-		productDescLbl.setText("Product Description: "+Session.getInstance().getUserSession().getProduct_description());
+		User tempUser = uc.getUserById(Session.getInstance().getUserSession().getUser_id());
+		productLbl.setText("Your Product: "+tempUser.getProduct_name());
+		productDescLbl.setText("Product Description: "+tempUser.getProduct_description());
 	}
 
 	private void setUpTable() {
@@ -179,7 +183,8 @@ public class HomeView extends VBox{
 		if(Session.getInstance().getUserSession().getUser_role().equals("Guest")) {
 			this.getChildren().addAll(basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
 		}else if(Session.getInstance().getUserSession().getUser_role().equals("Vendor")) {
-			this.getChildren().addAll(productLbl, productDescLbl, manageVendorBtn, basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
+			HBox btnBox = new HBox(10, manageVendorBtn, refreshBtn);
+			this.getChildren().addAll(productLbl, productDescLbl, btnBox, basicLbl,inviteTv,submitBtn,acceptInviteTv, viewEventDetailsBtn);
 		}
 		
 	}
