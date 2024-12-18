@@ -18,6 +18,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import main.Session;
 import model.Event;
@@ -41,6 +42,7 @@ public class InvitationView extends VBox {
     Button addVendor, backBtn;
     InvitationController ic = new InvitationController();
     Event selectedEvent = new Event();
+    NavbarView navbarView;
 
     public InvitationView(Event selectedEvent) {
         this.selectedEvent = selectedEvent;
@@ -51,6 +53,7 @@ public class InvitationView extends VBox {
     }
 
     private void init() {
+    	navbarView = new NavbarView();
         guestTv = new TableView<>();
         vendorTv = new TableView<>();
         addGuest = new Button("Add Guest");
@@ -115,8 +118,11 @@ public class InvitationView extends VBox {
 
         VBox vendorVBox = new VBox(10, vendorTv, addVendor);
         vendorVBox.setStyle("-fx-alignment: center; -fx-padding: 10;");
+        
+        HBox buttonBox2 = new HBox(10, backBtn);
+        buttonBox2.setStyle("-fx-alignment: center; -fx-padding: 10;");
 
-        this.getChildren().addAll(guestVBox, vendorVBox);
+        this.getChildren().addAll(navbarView, guestVBox, vendorVBox, buttonBox2);
     }
 
     private void selectGuest() {

@@ -23,17 +23,18 @@ public class Admin {
 	}
 	
 	public boolean deleteEvent(String eventID) {
-		boolean isDeleted = false;
+	    boolean isDeleted = false;
 	    try {
-	        String query = "DELETE FROM events WHERE event_id = " + eventID;
+	        String query = "DELETE FROM events WHERE event_id = '" + eventID + "'";
 	        int result = Connect.getInstance().execute(query);
 	        isDeleted = result > 0;
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	    }
 
-	    return isDeleted; 
+	    return isDeleted;
 	}
+
 	
 	public boolean deleteUser(String userID) {
 		 boolean isDeleted = false;

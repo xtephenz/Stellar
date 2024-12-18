@@ -96,9 +96,7 @@ public class EventDetailsView extends VBox {
             ViewController.getInstance(null).navigateToInvite(selectedEvent);
         });
         backButton = new Button("Back");
-        backButton.setOnMouseClicked(event ->{
-        	ViewController.getInstance(null).navigateToUserHome();
-        });
+        backButton.setOnMouseClicked(e->ViewController.getInstance(null).goBack());
     }
 
     private void configureComponents() {
